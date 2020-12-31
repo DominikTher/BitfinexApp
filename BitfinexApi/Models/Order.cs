@@ -2,8 +2,8 @@
 {
     class Order
     {
-        public string Symbol { get; init; }
+        public string Symbol { get; init; } = string.Empty;
         public float Amount { get; init; }
-        public float Total { get; set; }
+        public float Total { get; init; }
     }
 }

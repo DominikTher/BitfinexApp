@@ -1,4 +1,5 @@
-﻿using BitfinexApi.Models;
+﻿using BitfinexApi.Extensions;
+using BitfinexApi.Models;
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -13,9 +14,9 @@ namespace BitfinexApi.Converters
 
             var wallet = new Wallet();
             reader.Read();
-            wallet.Type = reader.GetString();
+            wallet.Type = reader.GetString()!;
             reader.Read();
-            wallet.Currency = reader.GetString();
+            wallet.Currency = reader.GetString()!;
             reader.Read();
             wallet.Balance = (float)reader.GetDouble();
             reader.Read();
@@ -23,11 +24,8 @@ namespace BitfinexApi.Converters
             reader.Read();
             wallet.AvaliableBalance = (float)reader.GetDouble();
 
-            while (reader.Read())
-            {
-                if (reader.CurrentDepth == startDepth)
-                    return wallet;
-            }
+            if (reader.ReadToEnd(startDepth))
+                return wallet;
 
             return wallet;
         }

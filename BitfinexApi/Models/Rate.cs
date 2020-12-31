@@ -2,6 +2,6 @@
 {
     class Rate
     {
-        public float CZK { get; set; }
+        public float CZK { get; init; }
     }
 }

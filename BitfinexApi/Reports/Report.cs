@@ -4,7 +4,6 @@ using BitfinexApi.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace BitfinexApi.Reports
@@ -36,7 +35,6 @@ namespace BitfinexApi.Reports
             var walletViews = wallets
                 .Select(wallet =>
                 {
-                    // TODO constants + automapper
                     var actualPrice = priceCurrencies.First(priceCurrency => priceCurrency.Currency == wallet.Currency).Price;
                     var orderPrice = processedOrders.FirstOrDefault(p => p.Symbol.Replace("USD", "") == wallet.Currency);
                     var totalUsd = wallet.Balance * actualPrice;
@@ -47,6 +45,7 @@ namespace BitfinexApi.Reports
                         Type = wallet.Type,
                         Currency = wallet.Currency,
                         Balance = wallet.Balance.ToString("0." + new string('#', 6)),
+
                         UnsettledInterest = wallet.UnsettledInterest.ToString("0." + new string('#', 6)),
                         AvaliableBalance = wallet.AvaliableBalance.ToString("0." + new string('#', 6)),
                         ActualPrice = actualPrice,
@@ -56,9 +55,9 @@ namespace BitfinexApi.Reports
                 });
 
             var czkRate = await czkRateService.Get();
-
             var grandTotalUsd = walletViews.Sum(walletView => walletView.TotalUsd);
             var grandTotalCzk = grandTotalUsd * czkRate;
+
             return new ReportViewModel
             {
                 WalletViews = walletViews,

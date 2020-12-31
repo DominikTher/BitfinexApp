@@ -1,4 +1,5 @@
-﻿using BitfinexApi.Models;
+﻿using BitfinexApi.Extensions;
+using BitfinexApi.Models;
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -11,36 +12,18 @@ namespace BitfinexApi.Converters
         {
             var startDepth = reader.CurrentDepth;
 
-            var order = new OrderItem();
-            reader.Read();
-            reader.Read();
-            reader.Read();
-            reader.Read();
-
-            order.Symbol = reader.GetString().Replace("t", "");
-            reader.Read();
-            reader.Read();
-            reader.Read();
-            reader.Read();
-
+            var order = new OrderItem(); // TODO read to variables and then create object with init properties
+            reader.Read(4);
+            order.Symbol = reader.GetString()!.Replace("t", "");
+            reader.Read(4);
             order.Amount = (float)reader.GetDouble();
-            reader.Read();
-            reader.Read();
-            reader.Read();
-            reader.Read();
-            reader.Read();
-            reader.Read();
-            order.Status = reader.GetString().Split(" ")[0];
-            reader.Read();
-            reader.Read();
-            reader.Read();
+            reader.Read(6);
+            order.Status = reader.GetString()!.Split(" ")[0];
+            reader.Read(3);
             order.Price = (float)reader.GetDouble();
 
-            while (reader.Read())
-            {
-                if (reader.CurrentDepth == startDepth)
-                    return order;
-            }
+            if (reader.ReadToEnd(startDepth))
+                return order;
 
             return order;
         }

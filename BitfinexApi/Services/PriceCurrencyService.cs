@@ -11,6 +11,7 @@ namespace BitfinexApi.Services
     class PriceCurrencyService : IPriceCurrencyService
     {
         private readonly IHttpClientFactory httpClientFactory;
+        private const string BitfinexPublicApiUri = "https://api-pub.bitfinex.com/";
 
         public PriceCurrencyService(IHttpClientFactory httpClientFactory)
         {
@@ -22,12 +23,13 @@ namespace BitfinexApi.Services
             Func<string, Task<(string Currency, float Price)>> selectPriceCurrency
                 = async currency =>
                 {
-                    if (currency == "USD") return ("USD", 1);
+                    if (currency == "USD") return ("USD", 1); // TODO constants
 
                     var httpClient = httpClientFactory.CreateClient();
-                    var response = await httpClient.GetStringAsync($"https://api-pub.bitfinex.com/v2/ticker/t{currency}USD");
+                    var tickerUri = $"v2/ticker/t{currency}USD";
+                    var response = await httpClient.GetStringAsync($"{BitfinexPublicApiUri}{tickerUri}");
                     var content = JsonSerializer.Deserialize<float[]>(response);
-                    return (Currency: currency, Price: content[2]);
+                    return (Currency: currency, Price: content![2]);
                 };
 
             var priceCurrenciesTasks = currency.Select(selectPriceCurrency);

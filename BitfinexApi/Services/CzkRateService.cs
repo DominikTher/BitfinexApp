@@ -9,6 +9,7 @@ namespace BitfinexApi.Services
     class CzkRateService : ICzkRateService
     {
         private readonly IHttpClientFactory httpClientFactory;
+        private const string ExchangeUri = "https://api.exchangeratesapi.io/latest?base=USD&symbols=CZK";
 
         public CzkRateService(IHttpClientFactory httpClientFactory)
         {
@@ -18,10 +19,10 @@ namespace BitfinexApi.Services
         public async Task<float> Get()
         {
             var httpClient = httpClientFactory.CreateClient();
-            var response = await httpClient.GetStringAsync("https://api.exchangeratesapi.io/latest?base=USD&symbols=CZK");
+            var response = await httpClient.GetStringAsync(ExchangeUri);
             var exchange = JsonSerializer.Deserialize<Exchange>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            return exchange.Rates.CZK;
+            return exchange!.Rates.CZK;
         }
     }
 }

@@ -2,7 +2,7 @@
 {
     class BitfinexApiConfiguration
     {
-        public string ApiKey { get; init; }
-        public string Secret { get; init; }
+        public string ApiKey { get; init; } = string.Empty;
+        public string Secret { get; init; } = string.Empty;
     }
 }

@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace BitfinexApi.Models
 {
     public class ReportViewModel
     {
-        public float TotalUsd { get; set; }
-        public float TotalCzk { get; set; }
-        public float ProfitCzk { get; set; }
-        public float Percentage { get; set; }
-        public IEnumerable<WalletViewModel> WalletViews { get; set; }
+        public float TotalUsd { get; init; }
+        public float TotalCzk { get; init; }
+        public float ProfitCzk { get; init; }
+        public float Percentage { get; init; }
+        public IEnumerable<WalletViewModel> WalletViews { get; init; } = Enumerable.Empty<WalletViewModel>();
     }
 }

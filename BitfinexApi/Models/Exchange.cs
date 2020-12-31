@@ -2,8 +2,8 @@
 {
     class Exchange
     {
-        public Rate Rates { get; set; }
-        public string Base { get; set; }
-        public string Date { get; set; }
+        public Rate Rates { get; init; } = new Rate();
+        public string Base { get; init; } = string.Empty;
+        public string Date { get; init; } = string.Empty;
     }
 }
