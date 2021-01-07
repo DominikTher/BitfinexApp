@@ -23,6 +23,13 @@ namespace BitfinexApp
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.InstallBitfinexApi(Configuration);
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = "Bitfinex";
+            })
+            .AddScheme<SimpleSecurityOptions, SimpleSecurityHandler>("Bitfinex", op => { });
+            //services.AddAuthorization();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -39,14 +46,16 @@ namespace BitfinexApp
                 app.UseHsts();
             }
 
+            app.UseAuthentication();
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            //app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapBlazorHub();
+                endpoints.MapBlazorHub().RequireAuthorization();
                 endpoints.MapFallbackToPage("/_Host");
             });
         }

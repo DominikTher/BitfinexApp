@@ -5,81 +5,84 @@
 @inject IReport report;
 @inject IJSRuntime JS;
 
-<div>
-    <h1 class="mt-5">Bitfinex</h1>
+<AuthorizeView>
+    <Authorized>
+        <div>
+            <h1 class="mt-5">Bitfinex</h1>
 
-    @if (reportViewModel == null)
-    {
-        <p><em>Loading...</em></p>
-    }
-    else
-    {
-        <div class="py-3">
-            <h2>Currency portfolio</h2>
-            <table class="table table-sm table-hover">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th></th>
-                        <th>Balance</th>
-                        <th></th>
-                        <th></th>
-                        <th>Actual Price</th>
-                        <th></th>
-                        <th>Total USD</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var wallet in reportViewModel.WalletViews)
-                    {
+            @if (reportViewModel == null)
+            {
+                <p><em>Loading...</em></p>
+            }
+            else
+            {
+                <div class="py-3">
+                    <h2>Currency portfolio</h2>
+                    <table class="table table-sm table-hover">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th>Balance</th>
+                                <th></th>
+                                <th></th>
+                                <th>Actual Price</th>
+                                <th></th>
+                                <th>Total USD</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var wallet in reportViewModel.WalletViews)
+                            {
 
-                        var gain = wallet.Percentage > 0;
+                                var gain = wallet.Percentage > 0;
 
-                        <tr>
-                            <td data-bs-toggle="tooltip" data-bs-placement="top" title="Wallet Type">@wallet.Type.ToUpper()[0]</td>
-                            <td data-bs-toggle="tooltip" data-bs-placement="top" title="Currency">@wallet.Currency</td>
-                            <td>@wallet.Balance</td>
-                            <td data-bs-toggle="tooltip" data-bs-placement="top" title="Avaliable Balance">@wallet.AvaliableBalance</td>
-                            <td data-bs-toggle="tooltip" data-bs-placement="top" title="Unsettled Interes">@wallet.UnsettledInterest</td>
-                            <td>@wallet.ActualPrice</td>
-                            <td class="@(gain ? "gain" : "loss" )">@wallet.Percentage <span class="@(wallet.Percentage.HasValue ? "" : "d-none")">%</span></td>
-                            <td>@wallet.TotalUsd.ToString("0." + new string('#', 4))</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                                <tr>
+                                    <td data-bs-toggle="tooltip" data-bs-placement="top" title="Wallet Type">@wallet.Type.ToUpper()[0]</td>
+                                    <td data-bs-toggle="tooltip" data-bs-placement="top" title="Currency">@wallet.Currency</td>
+                                    <td>@wallet.Balance</td>
+                                    <td data-bs-toggle="tooltip" data-bs-placement="top" title="Avaliable Balance">@wallet.AvaliableBalance</td>
+                                    <td data-bs-toggle="tooltip" data-bs-placement="top" title="Unsettled Interes">@wallet.UnsettledInterest</td>
+                                    <td>@wallet.ActualPrice</td>
+                                    <td class="@(gain ? "gain" : "loss" )">@wallet.Percentage <span class="@(wallet.Percentage.HasValue ? "" : "d-none")">%</span></td>
+                                    <td>@wallet.TotalUsd.ToString("0." + new string('#', 4))</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="py-3">
+                    <h2>Total balance</h2>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>USD</th>
+                                <th>CZK</th>
+                                <th>Profit CZK</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>@reportViewModel.TotalUsd</td>
+                                <td>@reportViewModel.TotalCzk</td>
+                                <td class="@(reportViewModel.ProfitCzk > 0 ? "gain" : "loss" )">@reportViewModel.ProfitCzk</td>
+                                <td class="@(reportViewModel.Percentage > 0 ? "gain" : "loss" )">@reportViewModel.Percentage %</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            }
         </div>
-
-        <div class="py-3">
-            <h2>Total balance</h2>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>USD</th>
-                        <th>CZK</th>
-                        <th>Profit CZK</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>@reportViewModel.TotalUsd</td>
-                        <td>@reportViewModel.TotalCzk</td>
-                        <td class="@(reportViewModel.ProfitCzk > 0 ? "gain" : "loss" )">@reportViewModel.ProfitCzk</td>
-                        <td class="@(reportViewModel.Percentage > 0 ? "gain" : "loss" )">@reportViewModel.Percentage %</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    }
-</div>
+    </Authorized>
+</AuthorizeView>
 
 @code {
     private ReportViewModel? reportViewModel;
     protected override async Task OnInitializedAsync()
     {
         reportViewModel = await report.Execute();
-
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
