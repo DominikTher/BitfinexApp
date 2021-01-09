@@ -38,7 +38,7 @@ namespace BitfinexApi.Reports
                     var actualPrice = priceCurrencies.First(priceCurrency => priceCurrency.Currency == wallet.Currency).Price;
                     var orderPrice = processedOrders.FirstOrDefault(p => p.Symbol.Replace("USD", "") == wallet.Currency);
                     var totalUsd = wallet.Balance * actualPrice;
-                    float? percentage = orderPrice != null ? orderPrice.Amount * actualPrice - orderPrice.Total : null;
+                    float? percentage = orderPrice != null ? (orderPrice.Total + totalUsd) / (orderPrice.Total / 100) * -1 : null;
 
                     return new WalletViewModel
                     {
@@ -85,7 +85,7 @@ namespace BitfinexApi.Reports
                 {
                     Symbol = group.Key,
                     Amount = group.Sum(orderItem => orderItem.Amount),
-                    Total = group.Sum(orderItem => orderItem.Amount * orderItem.Price)
+                    Total = group.Sum(orderItem => orderItem.Amount * orderItem.Price) * -1
                 });
 
             return processedOrders;

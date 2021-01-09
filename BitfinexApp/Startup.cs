@@ -52,7 +52,7 @@ namespace BitfinexApp
             app.UseStaticFiles();
 
             app.UseRouting();
-            //app.UseAuthorization();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapBlazorHub().RequireAuthorization();
